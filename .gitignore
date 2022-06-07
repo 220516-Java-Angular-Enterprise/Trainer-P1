@@ -23,7 +23,7 @@
 hs_err_pid*
 
 *out/
-*.iml/
+*.iml
 *.DS_Store
 *.idea/
 *target/
