@@ -2,7 +2,7 @@ package com.revature.yolp.daos;
 
 import com.revature.yolp.models.Restaurant;
 import com.revature.yolp.util.custom_exceptions.InvalidSQLException;
-import com.revature.yolp.util.database.DatabaseConnection;
+import com.revature.yolp.util.database.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantDAO implements CrudDAO<Restaurant> {
-    Connection con = DatabaseConnection.getCon();
 
     @Override
     public void save(Restaurant obj) {
-        try {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("INSERT INTO restaurants (id, name, city, state) VALUES (?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getName());
@@ -36,7 +35,7 @@ public class RestaurantDAO implements CrudDAO<Restaurant> {
 
     @Override
     public void delete(String id) {
-        try {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("DELETE FROM restaurants WHERE id = ?");
             ps.setString(1, id);
             ps.executeUpdate();
@@ -54,7 +53,7 @@ public class RestaurantDAO implements CrudDAO<Restaurant> {
     public List<Restaurant> getAll() {
         List<Restaurant> restaurants = new ArrayList<>();
 
-        try {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM restaurants");
             ResultSet rs = ps.executeQuery();
 
@@ -70,7 +69,7 @@ public class RestaurantDAO implements CrudDAO<Restaurant> {
     }
 
     public void updateRestoName(String name, String id) {
-        try {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("UPDATE restaurants SET name = ? WHERE id = ?");
             ps.setString(1, name);
             ps.setString(2, id);

@@ -1,7 +1,7 @@
 package com.revature.yolp.daos;
 
 import com.revature.yolp.models.Review;
-import com.revature.yolp.util.database.DatabaseConnection;
+import com.revature.yolp.util.database.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDAO implements CrudDAO<Review> {
-    Connection con = DatabaseConnection.getCon();
 
     @Override
     public void save(Review obj) {
@@ -41,7 +40,7 @@ public class ReviewDAO implements CrudDAO<Review> {
     public List<Review> getReviewsByRestoId(String resto_id) {
         List<Review> reviews = new ArrayList<>();
 
-        try {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM reviews WHERE restaurant_id = (?)");
             ps.setString(1, resto_id);
             ResultSet rs = ps.executeQuery();
